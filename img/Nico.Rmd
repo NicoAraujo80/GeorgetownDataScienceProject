@@ -1,0 +1,96 @@
+```{r}
+library(data.table)
+library(tidyverse)
+
+data = fread(file.choose(), sep = ",")
+
+```
+
+```{r}
+plot(all$Points.Per.Game, all$Player.Efficiency, type="p", cex=1, xlab = "PPG", ylab = "PER", col=all$hofornot)
+
+model = lm(hof2$Points.Per.Game~hof2$Name)
+
+text(all$Points.Per.Game, all$Player.Efficiency, labels=all$Name, pos=4, cex=1)
+
+lines(model$coefficients)
+```
+```{r}
+mydata=hof2$[,list(Minutes.Per.Game, Points.Per.Game, Player.Efficiency,)]
+mydata[,1]=as.numeric(mydata[,1])
+mydata <- na.omit(mydata)
+mydata <- scale(mydata)
+```
+```{r}
+#Determine number of clusters
+wss <- (nrow(mydata)-1)*sum(apply(mydata,2,var))
+for (i in 2:15) wss[i] <- sum(kmeans(mydata, centers=i)$withinss)
+plot(1:15, wss, type="b", xlab="Number of Clusters", ylab="Within groups sum of sqaures")
+
+#how many clusters do we choose (it's the bottom of the bend)
+```
+
+```{r}
+#after finding out how many clusters, K-means cluster analysis
+fit <- kmeans(mydata, 3) #3 cluste solution
+#get cluster means
+aggregate(mydata,by=list(fit$cluster),FUN=mean)
+mydata <- data.frame(mydata, fit$cluster, data$Player[c(1:6,8:length(data$Player))])
+```
+```{r}
+plot(all$Points.Per.Game, all$Vorp, type="p", cex=1, xlab = "PPG", ylab = "VORP", col=all$hofornot)
+
+model = lm(hof2$Points.Per.Game~hof2$Name)
+
+text(all$Points.Per.Game, all$Vorp, labels=all$Name, pos=4, cex=1)
+
+lines(model$coefficients)
+```
+```{r}
+plot(all$Player.Efficiency, all$Vorp, type="p", cex=1, xlab = "PER", ylab = "VORP", col=all$hofornot)
+
+model = lm(hof2$Points.Per.Game~hof2$Name)
+
+text(all$Player.Efficiency, all$Vorp, labels=all$Name, pos=4, cex=1)
+
+lines(model$coefficients)
+```
+```{r}
+plot(all$Field.Goal.Percentage, all$Three.Point.Percentage, type="p", cex=1, xlab = "FGP", ylab = "TPP", col=all$hofornot)
+
+model = lm(hof2$Points.Per.Game~hof2$Name)
+
+text(all$Field.Goal.Percentage, all$Three.Point.Percentage, labels=all$Name, pos=4, cex=1)
+
+lines(model$coefficients)
+```
+```{r}
+library(data.table)
+plot(all$Win.Shares, all$Vorp, type="p", cex=1, xlab = "WS", ylab = "VORP", col=all$hofornot)
+
+text(all$Win.Shares, all$Vorp, labels=all$Name, pos=4, cex=1)
+
+model = lm(hof2$Points.Per.Game~hof2$Name)
+
+lines(model$coefficients)
+```
+
+```{r}
+plot(all$Assists.Per.Game, all$Player.Efficiency, type="p", cex=1, xlab = "Assists Per Game", ylab = "PER", col=all$hofornot)
+
+text(all$Assists.Per.Game, all$Player.Efficiency, labels=all$Name, pos=4, cex=1)
+
+model = lm(hof2$Points.Per.Game~hof2$Name)
+
+```
+
+```{r}
+plot(all$Win.Shares, all$Player.Efficiency, type="p", cex=1, xlab = "WS", ylab = "PER", col=all$hofornot)
+
+text(all$Win.Shares, all$Player.Efficiency, labels=all$Name, pos=4, cex=1)
+
+model = lm(hof2$Points.Per.Game~hof2$Name)
+
+lines(model$coefficients)
+```
+
